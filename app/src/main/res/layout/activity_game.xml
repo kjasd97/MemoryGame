@@ -7,10 +7,10 @@
     tools:context=".presentation.GameActivity">
     <ImageButton
         android:id="@+id/imageButton1"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="15dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,8 +18,8 @@
 
     <ImageButton
         android:id="@+id/imageButton2"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
         android:layout_marginEnd="48dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,8 +28,8 @@
 
     <ImageButton
         android:id="@+id/imageButton3"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
         android:layout_marginTop="24dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="@+id/imageButton1"
@@ -38,8 +38,8 @@
 
     <ImageButton
         android:id="@+id/imageButton4"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="@+id/imageButton2"
         app:layout_constraintTop_toTopOf="@+id/imageButton3"
@@ -47,8 +47,8 @@
 
     <ImageButton
         android:id="@+id/imageButton5"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
         android:layout_marginTop="24dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="@+id/imageButton3"
@@ -57,30 +57,63 @@
 
     <ImageButton
         android:id="@+id/imageButton6"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="@+id/imageButton4"
         app:layout_constraintTop_toTopOf="@+id/imageButton5"
         app:srcCompat="@drawable/ic_code" />
 
-    <ImageButton
-        android:id="@+id/imageButton7"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="24dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="@+id/imageButton5"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton5"
-        app:srcCompat="@drawable/ic_code" />
 
-    <ImageButton
-        android:id="@+id/imageButton8"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="@+id/imageButton6"
-        app:layout_constraintTop_toTopOf="@+id/imageButton7"
-        app:srcCompat="@drawable/ic_code" />
+    <TextView
+        android:id="@+id/countOfAttempt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/imageButton6"
+        app:layout_constraintEnd_toStartOf="@id/time"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/attempt"
+        />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintTop_toBottomOf="@id/countOfAttempt" />
+
+    <Button
+        android:id="@+id/toMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/back_to_menu"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/time"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/restart"/>
+
+    <Button
+        android:id="@+id/restart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/time"
+        app:layout_constraintStart_toEndOf="@id/toMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/restart"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="20dp"
+        android:textAllCaps="false"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
