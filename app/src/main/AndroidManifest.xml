@@ -12,6 +12,9 @@
         android:theme="@style/Theme.MemoryGame"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.GameActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.MainActivity"
             android:exported="true">
             <intent-filter>
