@@ -19,5 +19,14 @@ class MainActivity : AppCompatActivity() {
         val intent = GameActivity.newIntent(this)
             startActivity(intent)
         }
+
+        binding.ButtonGetJson.setOnClickListener {
+            val intent = JsonActivity2.newIntent(this)
+            startActivity(intent)
+        }
+
+        binding.ButtonExit.setOnClickListener {
+            finish()
+        }
     }
 }

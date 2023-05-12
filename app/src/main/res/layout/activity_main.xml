@@ -50,7 +50,7 @@
             android:text="@string/get_json">
         </Button>
         <Button
-            android:id="@+id/Button03"
+            android:id="@+id/ButtonExit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

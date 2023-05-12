@@ -10,4 +10,8 @@
     <string name="time">Затраченое время: %s</string>
     <string name="back_to_menu">Back to menu</string>
     <string name="restart">Restart</string>
+    <string name="get_data">Get Data</string>
+    <string name="time_zone">Time zone</string>
+    <string name="city">City</string>
+    <string name="country">Country</string>
 </resources>
