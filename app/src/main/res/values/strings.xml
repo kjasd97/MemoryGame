@@ -6,4 +6,8 @@
     <string name="get_json">Get JSON</string>
     <string name="exit">Выход</string>
     <string name="play">Играть</string>
+    <string name="attempt">Количество ходов: %s</string>
+    <string name="time">Затраченое время: %s</string>
+    <string name="back_to_menu">Back to menu</string>
+    <string name="restart">Restart</string>
 </resources>
