@@ -6,10 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
-import com.ulyanenko.memorygame.R
 import com.ulyanenko.memorygame.databinding.ActivityJson2Binding
 
-class JsonActivity2 : AppCompatActivity() {
+class JsonActivity : AppCompatActivity() {
 
     private val binding by lazy {
         ActivityJson2Binding.inflate(layoutInflater)
@@ -40,7 +39,7 @@ class JsonActivity2 : AppCompatActivity() {
 
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, JsonActivity2::class.java)
+            return Intent(context, JsonActivity::class.java)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.ulyanenko.memorygame.presentation
+package com.ulyanenko.memorygame.domain
 
 data class MemoryCard(
     var identifier: Int,

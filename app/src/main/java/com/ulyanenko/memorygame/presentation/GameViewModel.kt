@@ -1,17 +1,11 @@
 package com.ulyanenko.memorygame.presentation
 
-import android.content.Context
-import android.content.Intent
-import android.text.BoringLayout
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.ulyanenko.memorygame.domain.MemoryCard
 
 class GameViewModel : ViewModel() {
-
 
     private val _countOfAttempts = MutableLiveData(0)
     val countOfAttempts: LiveData<Int>

@@ -2,7 +2,6 @@ package com.ulyanenko.memorygame.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.ulyanenko.memorygame.R
 import com.ulyanenko.memorygame.databinding.ActivityMainBinding
 
 
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.ButtonGetJson.setOnClickListener {
-            val intent = JsonActivity2.newIntent(this)
+            val intent = JsonActivity.newIntent(this)
             startActivity(intent)
         }
 
