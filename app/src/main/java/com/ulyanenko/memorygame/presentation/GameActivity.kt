@@ -7,9 +7,15 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.github.jinatonic.confetti.CommonConfetti
 import com.ulyanenko.memorygame.R
 import com.ulyanenko.memorygame.databinding.ActivityGameBinding
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 class GameActivity : AppCompatActivity() {
@@ -18,19 +24,22 @@ class GameActivity : AppCompatActivity() {
         ActivityGameBinding.inflate(layoutInflater)
     }
 
-    private lateinit var buttons: List<ImageButton>
-    private lateinit var cards: List<MemoryCard>
-    private var indexOfSingleSelectedCard: Int? = null
+    private val viewModel: GameViewModel by lazy {
+        ViewModelProvider(this).get(GameViewModel::class.java)
+    }
 
+    private lateinit var buttons: List<ImageButton>
+    private var startTime = 0L
     private var count: Int = 0
-    private var time = 0
-    var numPairsFound = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val startTime = System.currentTimeMillis()
+        startTime = System.currentTimeMillis()
+
+        observeViewModel()
 
         val images = mutableListOf(
             R.drawable.ic_heart,
@@ -40,18 +49,17 @@ class GameActivity : AppCompatActivity() {
         images.addAll(images)
         images.shuffle()
 
+
         buttons = listOf(
-            binding.imageButton1, binding.imageButton2, binding.imageButton3,
-            binding.imageButton4, binding.imageButton5,
+            binding.imageButton1,
+            binding.imageButton2,
+            binding.imageButton3,
+            binding.imageButton4,
+            binding.imageButton5,
             binding.imageButton6
         )
 
-        cards = buttons.indices.map { index ->
-            MemoryCard(images[index])
-        }
-
-        binding.countOfAttempt.text = String.format(getString(R.string.attempt), returnCont())
-        binding.time.text = String.format(getString(R.string.time), time)
+        viewModel.createCardsFromImages(images)
 
 
         buttons.forEachIndexed { index, button ->
@@ -61,22 +69,12 @@ class GameActivity : AppCompatActivity() {
                     rotationYBy(360f)
                 }.start()
 
-                count++
-                binding.countOfAttempt.text =
-                    String.format(getString(R.string.attempt), returnCont())
-                updateModels(index)
-                updateViews()
+                viewModel.returnCount(++count)
 
-                if (haveWonGame()) {
-                    val endTime = System.currentTimeMillis()
-                    binding.time.text = String.format(getString(R.string.time), formatTime(endTime-startTime))
+                viewModel.updateModels(index)
 
-                    Toast.makeText(this, "You are winner", Toast.LENGTH_SHORT).show()
-                    CommonConfetti.rainingConfetti(
-                        binding.root,
-                        intArrayOf(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                    ).oneShot()
-                }
+                viewModel.hasWonGame()
+
             }
         }
 
@@ -91,8 +89,52 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    private fun observeViewModel() {
 
-    private fun updateViews() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.countOfAttempts.collect {
+                        binding.countOfAttempt.text = String.format(getString(R.string.attempt), it)
+                    }
+                }
+                launch {
+                    viewModel.resultTime.collect {
+                        binding.time.text = String.format(getString(R.string.time), it)
+                    }
+                }
+                launch {
+                    viewModel.cards.collect {
+                        updateViews(it)
+                    }
+                }
+
+                launch {
+                    viewModel.isMatched.collect {
+                        Toast.makeText(this@GameActivity, "Match found!!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                launch {
+                    viewModel.hasWon.collect {
+                        if (it) {
+                            val endTime = System.currentTimeMillis()
+                            viewModel.formatTime(endTime - startTime)
+                            Toast.makeText(this@GameActivity, "You are winner", Toast.LENGTH_SHORT).show()
+                            CommonConfetti.rainingConfetti(
+                                binding.root,
+                                intArrayOf(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                            ).oneShot()
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    private fun updateViews(cards: List<MemoryCard>) {
         cards.forEachIndexed { index, card ->
             val button = buttons[index]
             if (card.isMatched) {
@@ -107,61 +149,10 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateModels(position: Int) {
-        val card = cards[position]
-        if (card.isFaceUp) {
-            Toast.makeText(this, "Invalid move!", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (indexOfSingleSelectedCard == null) {
-            restoreCards()
-            indexOfSingleSelectedCard = position
-        } else {
-            checkForMatch(indexOfSingleSelectedCard!!, position)
-            indexOfSingleSelectedCard = null
-        }
-        card.isFaceUp = !card.isFaceUp
-    }
-
-    private fun restoreCards() {
-        for (card in cards) {
-            if (!card.isMatched) {
-                card.isFaceUp = false
-            }
-        }
-    }
-
-    private fun checkForMatch(position1: Int, position2: Int) {
-        if (cards[position1].identifier == cards[position2].identifier) {
-            Toast.makeText(this, "Match found!!", Toast.LENGTH_SHORT).show()
-            cards[position1].isMatched = true
-            cards[position2].isMatched = true
-            numPairsFound++
-        }
-    }
-
-    fun haveWonGame(): Boolean {
-        return numPairsFound == 3
-    }
-
-    fun returnCont(): Int {
-        return count / 2
-    }
-
-    private fun formatTime(millis: Long): String {
-        val seconds = millis / MILLIS_IN_SECONDS
-        val minutes = seconds / SECONDS_IN_MINUTES
-        val leftSeconds = seconds - minutes * SECONDS_IN_MINUTES
-        return String.format("%02d:%02d", minutes, leftSeconds)
-    }
 
     companion object {
         fun newIntent(context: Context): Intent {
             return Intent(context, GameActivity::class.java)
         }
-
-        private const val MILLIS_IN_SECONDS = 1000L
-        private const val SECONDS_IN_MINUTES = 60
-
     }
 }
