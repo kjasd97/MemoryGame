@@ -49,33 +49,35 @@ class GameViewModel : ViewModel() {
     }
 
     fun updateModels(position: Int) {
-        val card = cards.value[position]
+        val cards = cards.value
+        val card = cards[position]
         if (card.isFaceUp) {
             return
         }
         if (indexOfSingleSelectedCard == null) {
-            restoreCards()
+            restoreCards(cards)
             indexOfSingleSelectedCard = position
         } else {
-            checkForMatch(indexOfSingleSelectedCard!!, position)
+            checkForMatch(indexOfSingleSelectedCard!!, position, cards)
             indexOfSingleSelectedCard = null
         }
         card.isFaceUp = !card.isFaceUp
+        _cards.value = cards
     }
 
-    private fun restoreCards() {
-        for (card in cards.value) {
+    private fun restoreCards(cards:List<MemoryCard>) {
+        for (card in cards) {
             if (!card.isMatched) {
                 card.isFaceUp = false
             }
         }
     }
 
-    private fun checkForMatch(position1: Int, position2: Int) {
-        if (cards.value[position1].identifier == cards.value[position2].identifier) {
+    private fun checkForMatch(position1: Int, position2: Int, cards: List<MemoryCard>) {
+        if (cards[position1].identifier == cards[position2].identifier) {
             _isMatched.value = true
-            cards.value[position1].isMatched = true
-            cards.value[position2].isMatched = true
+            cards[position1].isMatched = true
+            cards[position2].isMatched = true
             numPairsFound++
         }
     }
