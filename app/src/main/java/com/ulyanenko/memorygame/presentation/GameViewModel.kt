@@ -2,7 +2,10 @@ package com.ulyanenko.memorygame.presentation
 
 import android.content.Context
 import android.content.Intent
+import android.text.BoringLayout
 import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,25 +13,32 @@ import kotlinx.coroutines.flow.asStateFlow
 class GameViewModel : ViewModel() {
 
 
-    private val _countOfAttempts = MutableStateFlow(0)
-    val countOfAttempts = _countOfAttempts.asStateFlow()
+    private val _countOfAttempts = MutableLiveData(0)
+    val countOfAttempts: LiveData<Int>
+        get() = _countOfAttempts
 
-    private val _resultTime = MutableStateFlow("0")
-    val resultTime = _resultTime.asStateFlow()
+    private val _resultTime = MutableLiveData("0")
+    val resultTime: LiveData<String>
+        get() = _resultTime
 
-    private val _cards = MutableStateFlow(mutableListOf<MemoryCard>())
-    val cards = _cards.asStateFlow()
+    private val _cards = MutableLiveData<List<MemoryCard>>()
+    val cards: LiveData<List<MemoryCard>>
+        get() = _cards
 
-    private val _isMatched = MutableStateFlow(false)
-    val isMatched = _isMatched.asStateFlow()
+    private val _isMatched = MutableLiveData(false)
+    val isMatched: LiveData<Boolean>
+        get() = _isMatched
 
-    private val _hasWon = MutableStateFlow(false)
-    val hasWon = _hasWon.asStateFlow()
+    private val _hasWon = MutableLiveData(false)
+    val hasWon: LiveData<Boolean>
+        get() = _hasWon
 
 
     private var indexOfSingleSelectedCard: Int? = null
 
     private var numPairsFound = 0
+
+    private var countOfClicks = 0
 
 
     fun createCardsFromImages(images: List<Int>) {
@@ -37,7 +47,8 @@ class GameViewModel : ViewModel() {
         _cards.value = cards
     }
 
-    fun returnCount(countOfClicks: Int) {
+    fun returnCount() {
+        countOfClicks++
         _countOfAttempts.value = countOfClicks / 2
     }
 
@@ -49,7 +60,7 @@ class GameViewModel : ViewModel() {
     }
 
     fun updateModels(position: Int) {
-        val cards = cards.value
+        val cards = cards.value?: listOf()
         val card = cards[position]
         if (card.isFaceUp) {
             return
@@ -65,7 +76,7 @@ class GameViewModel : ViewModel() {
         _cards.value = cards
     }
 
-    private fun restoreCards(cards:List<MemoryCard>) {
+    private fun restoreCards(cards: List<MemoryCard>) {
         for (card in cards) {
             if (!card.isMatched) {
                 card.isFaceUp = false
@@ -89,8 +100,6 @@ class GameViewModel : ViewModel() {
     }
 
     companion object {
-
-        private const val NUMBER_OF_CARDS = 6
 
         private const val MILLIS_IN_SECONDS = 1000L
         private const val SECONDS_IN_MINUTES = 60

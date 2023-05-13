@@ -30,8 +30,6 @@ class GameActivity : AppCompatActivity() {
 
     private lateinit var buttons: List<ImageButton>
     private var startTime = 0L
-    private var count: Int = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,11 +67,11 @@ class GameActivity : AppCompatActivity() {
                     rotationYBy(360f)
                 }.start()
 
-                viewModel.returnCount(++count)
-
-                viewModel.updateModels(index)
-
-                viewModel.hasWonGame()
+                with(viewModel) {
+                    returnCount()
+                    updateModels(index)
+                    hasWonGame()
+                }
 
             }
         }
@@ -91,46 +89,37 @@ class GameActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                launch {
-                    viewModel.countOfAttempts.collect {
-                        binding.countOfAttempt.text = String.format(getString(R.string.attempt), it)
-                    }
-                }
-                launch {
-                    viewModel.resultTime.collect {
-                        binding.time.text = String.format(getString(R.string.time), it)
-                    }
-                }
-                launch {
-                    viewModel.cards.collect {
-                        updateViews(it)
-                    }
-                }
+        viewModel.countOfAttempts.observe(this) {
+            binding.countOfAttempt.text = String.format(getString(R.string.attempt), it)
+        }
 
-                launch {
-                    viewModel.isMatched.collect {
-                        Toast.makeText(this@GameActivity, "Match found!!", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-                launch {
-                    viewModel.hasWon.collect {
-                        if (it) {
-                            val endTime = System.currentTimeMillis()
-                            viewModel.formatTime(endTime - startTime)
-                            Toast.makeText(this@GameActivity, "You are winner", Toast.LENGTH_SHORT).show()
-                            CommonConfetti.rainingConfetti(
-                                binding.root,
-                                intArrayOf(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                            ).oneShot()
-                        }
-                    }
-                }
+        viewModel.resultTime.observe(this) {
+            binding.time.text = String.format(getString(R.string.time), it)
+        }
+
+        viewModel.cards.observe(this) {
+            updateViews(it)
+        }
+
+        viewModel.isMatched.observe(this) {
+            if (it) {
+                Toast.makeText(this, "Match found!!", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
+        viewModel.hasWon.observe(this) {
+            if (it) {
+                val endTime = System.currentTimeMillis()
+                viewModel.formatTime(endTime - startTime)
+                Toast.makeText(this, "You are winner", Toast.LENGTH_SHORT)
+                    .show()
+                CommonConfetti.rainingConfetti(
+                    binding.root,
+                    intArrayOf(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                ).oneShot()
+            }
+        }
 
     }
 
