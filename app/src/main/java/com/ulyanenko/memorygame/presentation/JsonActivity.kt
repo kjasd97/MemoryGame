@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import com.ulyanenko.memorygame.MemoryGameApp
 import com.ulyanenko.memorygame.databinding.ActivityJson2Binding
+import javax.inject.Inject
 
 class JsonActivity : AppCompatActivity() {
 
@@ -14,12 +16,22 @@ class JsonActivity : AppCompatActivity() {
         ActivityJson2Binding.inflate(layoutInflater)
     }
 
-    private lateinit var viewModel: JsonViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+     ViewModelProvider(this, viewModelFactory).get(JsonViewModel::class.java)
+    }
+
+    private val component by lazy {
+        (application as MemoryGameApp).component
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(this).get(JsonViewModel::class.java)
+
 
         viewModel.response.observe (this){
             Log.d("MainTest", "$it")

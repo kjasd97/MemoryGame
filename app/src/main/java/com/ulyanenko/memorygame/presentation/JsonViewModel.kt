@@ -11,10 +11,13 @@ import com.ulyanenko.memorygame.domain.LoadDataUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class JsonViewModel : ViewModel() {
+class JsonViewModel @Inject constructor(
+    private val loadDataUseCase: LoadDataUseCase
+): ViewModel() {
 
-private val loadDataUseCase = LoadDataUseCase(LoadDataRepositoryImpl())
+
 
     private val _response = MutableLiveData<JsonResponse>()
     val response: LiveData<JsonResponse>
