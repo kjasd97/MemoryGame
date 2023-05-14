@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ulyanenko.memorygame.domain.MemoryCard
+import javax.inject.Inject
 
-class GameViewModel : ViewModel() {
+class GameViewModel @Inject constructor() : ViewModel() {
 
     private val _countOfAttempts = MutableLiveData(0)
     val countOfAttempts: LiveData<Int>
