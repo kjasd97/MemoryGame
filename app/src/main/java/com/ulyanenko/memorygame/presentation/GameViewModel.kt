@@ -71,6 +71,15 @@ class GameViewModel @Inject constructor() : ViewModel() {
         _cards.value = cards
     }
 
+    fun restartGame(images: List<Int>){
+        numPairsFound = 0
+        indexOfSingleSelectedCard =0
+        _resultTime.value = "0"
+        _countOfAttempts.value = 0
+        countOfClicks = 0
+        _cards.value = images.map { MemoryCard(it) }
+    }
+
     private fun restoreCards(cards: List<MemoryCard>) {
         for (card in cards) {
             if (!card.isMatched) {

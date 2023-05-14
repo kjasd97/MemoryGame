@@ -87,9 +87,12 @@ class GameActivity : AppCompatActivity() {
         }
 
         binding.restart.setOnClickListener {
-            val intent = intent
-            finish()
-            startActivity(intent)
+            images.shuffle()
+            viewModel.restartGame(images)
+            buttons.forEach {
+                it.alpha = 1F
+            }
+            startTime = System.currentTimeMillis()
         }
     }
 
