@@ -9,9 +9,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.github.jinatonic.confetti.CommonConfetti
+import com.ulyanenko.memorygame.MemoryGameApp
 import com.ulyanenko.memorygame.R
 import com.ulyanenko.memorygame.databinding.ActivityGameBinding
 import com.ulyanenko.memorygame.domain.MemoryCard
+import javax.inject.Inject
 
 
 class GameActivity : AppCompatActivity() {
@@ -20,14 +22,23 @@ class GameActivity : AppCompatActivity() {
         ActivityGameBinding.inflate(layoutInflater)
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private val viewModel: GameViewModel by lazy {
-        ViewModelProvider(this).get(GameViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(GameViewModel::class.java)
+    }
+
+    private val component by lazy {
+        (application as MemoryGameApp).component
     }
 
     private lateinit var buttons: List<ImageButton>
     private var startTime = 0L
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
@@ -54,7 +65,6 @@ class GameActivity : AppCompatActivity() {
         )
 
         viewModel.createCardsFromImages(images)
-
 
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
